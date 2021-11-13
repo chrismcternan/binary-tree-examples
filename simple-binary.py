@@ -6,24 +6,24 @@
 
 # create binary search tree as a class
 class BinarySearchTree:
-    def __init__(self, data: int) -> None:
-        self.data = data
+    def __init__(self, key: int) -> None:
+        self.key = key
         self.left = None
         self.right = None
 
     # defines a function to search for a key
     def search(self, key: int) -> object:
-        if self.data == key:
+        if self.key == key:
             print('Object found at key')
             return self
 
-        if key < self.data:
+        if key < self.key:
             if self.left:
                 return self.left.search(key=key)
             else:
                 print('No object found at key')
                 return None
-        elif key > self.data:
+        elif key > self.key:
             if self.right:
                 return self.right.search(key=key)
             else:
@@ -34,12 +34,12 @@ class BinarySearchTree:
     def print_inorder(self) -> None:
         if self.left is not None:
             self.left.print_inorder()
-        print(self.data, end=' ')
+        print(self.key, end=' ')
         if self.right is not None:
             self.right.print_inorder()
 
     def print_preorder(self) -> None:
-        print(self.data, end=' ')
+        print(self.key, end=' ')
         if self.left is not None:
             self.left.print_preorder()
         if self.right is not None:
@@ -50,35 +50,35 @@ class BinarySearchTree:
             self.left.print_postorder()
         if self.right is not None:
             self.right.print_postorder()
-        print(self.data, end=' ')
+        print(self.key, end=' ')
 
 
 # creates BST that uses recursive method
 class RecursiveBinaryTree(BinarySearchTree):
     # defines function that returns true or false based on input
     def high_low(self, value: int) -> bool:
-        if value < self.data:
+        if value < self.key:
             return False
-        elif value > self.data:
+        elif value > self.key:
             return True
 
     # defines function to insert values into tree based on high/low
     def insert(self, value: int) -> None:
-        # if empty, adds data to root node
-        if self.data is None:
-            self.data = value
+        # if empty, adds key to root node
+        if self.key is None:
+            self.key = value
         # if value returns low, then branch left
         elif not self.high_low(value):
             # adds recursive tree if value does not exist at left branch
             if self.left is None:
-                self.left = RecursiveBinaryTree(data=value)
+                self.left = RecursiveBinaryTree(key=value)
             else:
                 self.left.insert(value)
         # if value returns high, then branch right
         elif self.high_low(value):
             # adds recursive tree if value does not exist at right branch
             if self.right is None:
-                self.right = RecursiveBinaryTree(data=value)
+                self.right = RecursiveBinaryTree(key=value)
             else:
                 self.right.insert(value)
 
@@ -86,9 +86,9 @@ class RecursiveBinaryTree(BinarySearchTree):
 class IterativeBinaryTree(BinarySearchTree):
     # defines function that returns true or false based on input
     def high_low(self, value: int) -> bool:
-        if value < self.data:
+        if value < self.key:
             return False
-        if value > self.data:
+        if value > self.key:
             return True
 
     # defines a function that inserts value using iterative function
@@ -96,9 +96,9 @@ class IterativeBinaryTree(BinarySearchTree):
         curr = None
         # stores parent node pointer
         parent = None
-        # if empty, adds data to root node
-        if self.data is None:
-            self.data = value
+        # if empty, adds key to root node
+        if self.key is None:
+            self.key = value
         else:
             curr = self
         # iterates until current object branch is None
@@ -123,7 +123,7 @@ if __name__ == '__main__':
     data_array = [8, 2, 4, 9, 5, 10, 11, 3, 6, 16, 12]
     # setup and print Binary search tree using recursive method
     # initialize recursive BST node
-    recur_node = RecursiveBinaryTree(data=None)
+    recur_node = RecursiveBinaryTree(key=None)
     for i in data_array:
         recur_node.insert(i)
     print("Recursive tree in-order is:")
@@ -137,7 +137,7 @@ if __name__ == '__main__':
     print('\n')
     # setup and print Binary search tree using iterative method
     # initialize iterative BST node
-    iter_node = IterativeBinaryTree(data=None)
+    iter_node = IterativeBinaryTree(key=None)
     for i in data_array:
         iter_node.insert(i)
     print("Iterative tree in-order is:")
