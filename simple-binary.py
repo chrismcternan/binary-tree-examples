@@ -11,6 +11,25 @@ class BinarySearchTree:
         self.left = None
         self.right = None
 
+    # defines a function to search for a key
+    def search(self, key: int) -> object:
+        if self.data == key:
+            print('Object found at key')
+            return self
+
+        if key < self.data:
+            if self.left:
+                return self.left.search(key=key)
+            else:
+                print('No object found at key')
+                return None
+        elif key > self.data:
+            if self.right:
+                return self.right.search(key=key)
+            else:
+                print('No object found at key')
+                return None
+
     # defines function for printing tree in-order (left, root, right)
     def print_inorder(self) -> None:
         if self.left is not None:
@@ -130,3 +149,9 @@ if __name__ == '__main__':
     print("Iterative tree post-order is:")
     iter_node.print_postorder()
     print('\n')
+
+    # Search recursive binary tree for values
+    recur_node.search(3)
+    recur_node.search(15)
+    recur_node.search(7)
+    recur_node.search(12)
