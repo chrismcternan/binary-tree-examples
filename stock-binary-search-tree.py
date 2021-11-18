@@ -6,6 +6,7 @@ import csv
 import time
 
 
+# Creates a class to store stock data in bins
 class StockData:
     def __init__(self, ticker: str, name: str, sector: str) -> None:
         self.ticker = ticker
@@ -18,7 +19,7 @@ class StockData:
         print('Sector: ' + self.sector)
 
 
-class BinarySearchTree:
+class CompanyNameTree:
     def __init__(self, key: str, data: StockData) -> None:
         self.key = key
         self.left = None
@@ -81,38 +82,101 @@ class BinarySearchTree:
         elif not self.high_low(key):
             # adds recursive tree if value does not exist at left branch
             if self.left is None:
-                self.left = BinarySearchTree(key=key, data=data)
+                self.left = CompanyNameTree(key=key, data=data)
             else:
                 self.left.insert(key=key, data=data)
         # if value returns high, then branch right
         elif self.high_low(key):
             # adds recursive tree if value does not exist at right branch
             if self.right is None:
-                self.right = BinarySearchTree(key=key, data=data)
+                self.right = CompanyNameTree(key=key, data=data)
             else:
                 self.right.insert(key=key, data=data)
 
 
-node = BinarySearchTree(key=None, data=None)
-with open('constituents_csv.csv', newline='') as f:
+# Creates a class tp store stock data by sector in a tree
+class SectorSearchTree:
+    """
+        Stores stock data by Sector. Each node stores a sector which contains a list of the company
+        stock. When searching by sectors, the list is returned and the data is found in CompanyNameTree
+    """
+    def __init__(self, sector_key: str) -> None:
+        self.key = sector_key
+        self.left = None
+        self.right = None
+        self.ticker_list = []
+
+    # searches for sector name if it already exists in tree, points to the node
+    def find_sector(self, sector: str) -> object:
+        if self.key == sector:
+            return self
+        elif self.key < sector:
+            if self.left:
+                return self.left.find_sector(sector=sector)
+            else:
+                self.left = SectorSearchTree(sector_key=sector)
+                return self.left
+        elif self.key > sector:
+            if self.right:
+                return self.right.find_sector(sector=sector)
+            else:
+                self.right = SectorSearchTree(sector_key=sector)
+                return self.right
+
+    # defines function that takes sector node and appends to name_list
+    def add_company(self, sector: str, company_index: str) -> None:
+        sector_node = self.find_sector(sector=sector)
+        sector_node.ticker_list.append(company_index)
+
+    def print_sector(self, sector: str):
+        sector_node = self.find_sector(sector=sector)
+        ticker_list = sector_node.ticker_list
+        for index in ticker_list:
+            row_data = node.search(index)
+            row_data.print_data()
+
+
+# Initializes the tree with empty node
+node = CompanyNameTree(key='', data=StockData(ticker='',name='',sector=''))
+sector_root = SectorSearchTree(sector_key='')
+with open('stock_data.csv', newline='') as f:
     csv_data = csv.reader(f, delimiter=',')
     ticker_arr = []
     for row in csv_data:
         node.insert(key=row[0], data=StockData(ticker=row[0], name=row[1], sector=row[2]))
+        sector_root.add_company(sector=row[2], company_index=row[0])
         ticker_arr.append(row)
 
 # node.print_inorder()
 # print('\n')
 
 # search for Company data with ticker
-stock_ticker = 'DDD'
-# records search time
-BST_search_time = time.time()
-# find and print data in BST
-stock_data = node.search(stock_ticker)
-if stock_data:
-    stock_data.print_data()
-print("---%s seconds ---" % (time.time() - BST_search_time))
+# stock_ticker = 'DDD'
+# # records search time
+# company_search_time = time.time()
+# # find and print data in BST
+# stock_data = node.search(stock_ticker)
+# if stock_data:
+#     stock_data.print_data()
+# print("---%s seconds ---" % (time.time() - company_search_time))
+
+search_time_start = time.time()
+sector_search = 'Health Care'
+sector_root.print_sector(sector_search)
+binary_sector_search_time = time.time() - search_time_start
+
+search_time_start = time.time()
+for row in ticker_arr:
+    if row[2] == 'Health Care':
+        print('Stock Ticker: ' + row[0])
+        print('Company Name: ' + row[1])
+        print('Sector: ' + row[2])
+loop_sector_search_time = time.time() - search_time_start
+print("Sector Search using Binary Trees Indexing:")
+print("---%s seconds ---" % binary_sector_search_time)
+print("Sector Search using iteration")
+print("---%s seconds ---" % loop_sector_search_time)
+
 
 # loop_search_time = time.time()
 # for row in ticker_arr:
