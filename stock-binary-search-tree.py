@@ -4,15 +4,20 @@
 # Parses S&P 500 data into a binary search tree and outputs based on a search
 import csv
 import time
+import requests
+import pandas as pd
+
 
 
 # Creates a class to store stock data in bins
 class StockData:
+    """ Creates data structure for stock data and prints data when called """
     def __init__(self, ticker: str, name: str, sector: str) -> None:
         self.ticker = ticker
         self.name = name
         self.sector = sector
 
+    # Prints data when called
     def print_data(self):
         print('Stock Ticker: ' + self.ticker)
         print('Company Name: ' + self.name)
@@ -20,6 +25,7 @@ class StockData:
 
 
 class CompanyNameTree:
+    """ Binary search tree to store company data """
     def __init__(self, key: str, data: StockData) -> None:
         self.key = key
         self.left = None
